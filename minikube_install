@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#Update Server
+sudo apt update -y
+
+#Install needed curl package
+sudo apt install --no-install-recommends curl  -y
+
+# install kubectl
+# https://github.com/kubernetes/minikube/issues/3437#issuecomment-449408316, maybe use https://storage.googleapis.com/minikube/releases/v0.30.0/docker-machine-driver-kvm2
+curl -Lo /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x /tmp/kubectl && \
+sudo mv /tmp/kubectl /usr/local/bin/kubectl
+
+# kubectl tab completion
+sudo sh -c 'echo "source <(kubectl completion bash)" > /etc/bash_completion.d/kubectl'
+
+# install needed packages for kvm (see https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#kvm2-driver)
+sudo apt-get install apt-transport-https
+
+sudo apt install docker.io
+
+sudo systemctl start docker
+
+#sudo apt install --no-install-recommends curl libvirt-bin qemu-kvm -y
+sudo usermod -a -G docker ubuntu && sudo newgrp docker
+#newgrp libvirtd
+
+# install minikube
+sudo apt-get install -y conntrack ## Need for running minikube --driver=none
+curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
+chmod +x /tmp/minikube && \
+sudo mv /tmp/minikube /usr/local/bin/minikube
+
+sudo minikube start driver=none
