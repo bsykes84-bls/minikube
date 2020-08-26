@@ -31,4 +31,4 @@ curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/latest/m
 chmod +x /tmp/minikube && \
 sudo mv /tmp/minikube /usr/local/bin/minikube
 
-sudo minikube start driver=none
+sudo minikube start driver=docker
